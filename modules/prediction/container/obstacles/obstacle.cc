@@ -857,6 +857,7 @@ void Obstacle::SetLaneGraphFeature(Feature* feature) {
     for (const auto& lane_seq : lane_graph.lane_sequence()) {
       LaneSequence seq(lane_seq);
       seq.set_lane_sequence_id(seq_id++);
+      seq.set_relation_type(LaneSequence::CURRENT_LANE);
       feature->mutable_lane()
           ->mutable_lane_graph()
           ->add_lane_sequence()
@@ -881,6 +882,11 @@ void Obstacle::SetLaneGraphFeature(Feature* feature) {
     for (const auto& lane_seq : lane_graph.lane_sequence()) {
       LaneSequence seq(lane_seq);
       seq.set_lane_sequence_id(seq_id++);
+      if (lane.lane_l() < 0.0) {
+        seq.set_relation_type(LaneSequence::RIGHT_NEIGHBOR_LANE);
+      } else {
+        seq.set_relation_type(LaneSequence::LEFT_NEIGHBOR_LANE);
+      }
       feature->mutable_lane()
           ->mutable_lane_graph()
           ->add_lane_sequence()

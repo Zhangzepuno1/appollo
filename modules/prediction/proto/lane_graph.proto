@@ -18,9 +18,9 @@ message LanePoint {
     optional double kappa = 7 [default = 0.0];
 
     enum ScenarioType {
-        URBAN_ROAD = 0;
-        JUNCTION = 1;
-        HIGHWAY = 2;
+        URBAN_ROAD = 1;
+        JUNCTION = 2;
+        HIGHWAY = 3;
     }
 
     optional ScenarioType scenario_type = 8;
@@ -71,16 +71,24 @@ message LaneSequence {
     optional BehaviorType behavior_type = 9;
     optional bool vehicle_on_lane = 10;
 
+    enum RelationType {
+        CURRENT_LANE = 1;
+        LEFT_NEIGHBOR_LANE = 2;
+        RIGHT_NEIGHBOR_LANE = 3;
+    }
+
+    optional RelationType relation_type = 11;
+
     // lane points on this lane sequence
-    repeated LanePoint curr_lane_point = 11;
+    repeated LanePoint curr_lane_point = 12;
     // lane points on the left neighbor lane sequence
-    repeated LanePoint left_neighbor_point = 12;
+    repeated LanePoint left_neighbor_point = 13;
     // lane points on the right neighbor lane sequence
-    repeated LanePoint right_neighbor_point = 13;
+    repeated LanePoint right_neighbor_point = 14;
     // nearby obstacles on the left neighbor lane sequence
-    repeated NearbyObstacle left_nearby_obstacle = 14;
+    repeated NearbyObstacle left_nearby_obstacle = 15;
     // nearby obstacles on the right neighbor lane sequence
-    repeated NearbyObstacle right_nearby_obstacle = 15;
+    repeated NearbyObstacle right_nearby_obstacle = 16;
 }
 
 message LaneGraph {
