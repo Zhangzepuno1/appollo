@@ -56,8 +56,8 @@ class ObstacleClusters {
    * @return If the forward obstacle is found
    */
   bool ForwardNearbyObstacle(
-      const LaneSequence& lane_sequence, const double s,
-      LaneObstacle* const lane_obstacle);
+      const LaneSequence& lane_sequence, const double obstacle_s,
+      NearbyObstacle* const nearby_obstacle_ptr);
 
  private:
   ObstacleClusters() = delete;
