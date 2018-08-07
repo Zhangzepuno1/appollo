@@ -94,3 +94,9 @@ message LaneSequence {
 message LaneGraph {
     repeated LaneSequence lane_sequence = 1;
 }
+
+message LaneObstacle {
+    optional int32 obstacle_id = 1;
+    optional string lane_id = 2;
+    optional double lane_s = 3;
+}

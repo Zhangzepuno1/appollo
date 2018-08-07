@@ -55,5 +55,12 @@ const LaneGraph& ObstacleClusters::GetLaneGraph(
   return lane_graphs_[lane_id];
 }
 
+bool ObstacleClusters::ForwardNearbyObstacle(
+    const LaneSequence& lane_sequence, const double s,
+    LaneObstacle* const lane_obstacle) {
+  // TODO(kechxu) implement
+  return true;
+}
+
 }  // namespace prediction
 }  // namespace apollo

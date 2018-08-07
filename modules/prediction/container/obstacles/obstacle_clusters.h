@@ -21,6 +21,7 @@
 #include <string>
 #include <unordered_map>
 #include <utility>
+#include <vector>
 
 #include "modules/common/macro.h"
 #include "modules/map/hdmap/hdmap_common.h"
@@ -47,6 +48,17 @@ class ObstacleClusters {
       const double start_s, const double length,
       std::shared_ptr<const apollo::hdmap::LaneInfo> lane_info_ptr);
 
+  /**
+   * @brief Get the nearest obstacle on lane sequence at s
+   * @param Lane sequence
+   * @param s offset in the first lane of the lane sequence
+   * @param the forward obstacle on lane
+   * @return If the forward obstacle is found
+   */
+  bool ForwardNearbyObstacle(
+      const LaneSequence& lane_sequence, const double s,
+      LaneObstacle* const lane_obstacle);
+
  private:
   ObstacleClusters() = delete;
 
@@ -54,6 +66,8 @@ class ObstacleClusters {
 
  private:
   static std::unordered_map<std::string, LaneGraph> lane_graphs_;
+  static std::unordered_map<std::string,
+                            std::vector<LaneObstacle>> lane_obstacles_;
 };
 
 }  // namespace prediction
