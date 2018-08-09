@@ -94,6 +94,7 @@ cc_library(
         "//modules/common:macro",
         "//modules/map/hdmap:hdmap_util",
         "//modules/prediction/common:road_graph",
+        "//modules/prediction/common:prediction_map",
         "//modules/prediction/proto:lane_graph_proto",
     ],
 )

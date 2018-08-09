@@ -49,15 +49,30 @@ class ObstacleClusters {
       std::shared_ptr<const apollo::hdmap::LaneInfo> lane_info_ptr);
 
   /**
-   * @brief Get the nearest obstacle on lane sequence at s
+   * @brief Get the forward nearest obstacle on lane sequence at s
    * @param Lane sequence
    * @param s offset in the first lane of the lane sequence
    * @param the forward obstacle on lane
    * @return If the forward obstacle is found
    */
   bool ForwardNearbyObstacle(
-      const LaneSequence& lane_sequence, const double obstacle_s,
+      const LaneSequence& lane_sequence,
+      const int obstacle_id,
+      const double obstacle_s,
       NearbyObstacle* const nearby_obstacle_ptr);
+
+  /**
+   * @brief Get the backward nearest obstacle on lane sequence at s
+   * @param Lane sequence
+   * @param s offset in the first lane of the lane sequence
+   * @param the forward obstacle on lane
+   * @return If the backward obstacle is found
+   */
+  bool BackwardNearbyObstacle(
+    const LaneSequence& lane_sequence,
+    const int obstacle_id,
+    const double obstacle_s,
+    NearbyObstacle* const nearby_obstacle_ptr);
 
  private:
   ObstacleClusters() = delete;
@@ -66,6 +81,7 @@ class ObstacleClusters {
 
  private:
   static std::unordered_map<std::string, LaneGraph> lane_graphs_;
+  // The obstacles on each lane are sorted by s
   static std::unordered_map<std::string,
                             std::vector<LaneObstacle>> lane_obstacles_;
 };
