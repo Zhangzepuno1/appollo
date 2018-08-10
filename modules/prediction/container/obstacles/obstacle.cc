@@ -1009,6 +1009,10 @@ void Obstacle::SetLaneSequencePath(LaneGraph* const lane_graph) {
   }
 }
 
+void Obstacle::SetNearbyObstacles() {
+  // TODO(kechxu) implement
+}
+
 void Obstacle::SetMotionStatus() {
   int history_size = static_cast<int>(feature_history_.size());
   if (history_size < 2) {

@@ -48,6 +48,24 @@ class ObstacleClusters {
       const double start_s, const double length,
       std::shared_ptr<const apollo::hdmap::LaneInfo> lane_info_ptr);
 
+   /**
+   * @brief Add an obstacle into clusters
+   * @param obstacle id
+   * @param lane id
+   * @param lane s
+   * @param lane l
+   */
+  static void AddObstacle(
+      const int obstacle_id,
+      const std::string& lane_id,
+      const double lane_s,
+      const double lane_l);
+
+  /**
+   * @brief Sort lane obstacles by lane s
+   */
+  static void SortObstacles();
+
   /**
    * @brief Get the forward nearest obstacle on lane sequence at s
    * @param Lane sequence

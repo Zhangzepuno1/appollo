@@ -108,6 +108,11 @@ class Obstacle {
   const Feature& latest_feature() const;
 
   /**
+   * @brief Set nearby obstacles.
+   */
+  void SetNearbyObstacles();
+
+  /**
    * @brief Get a pointer to the latest feature.
    * @return A pointer to the latest feature.
    */

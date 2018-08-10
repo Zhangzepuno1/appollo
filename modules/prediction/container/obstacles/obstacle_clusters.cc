@@ -60,6 +60,18 @@ const LaneGraph& ObstacleClusters::GetLaneGraph(
   return lane_graphs_[lane_id];
 }
 
+void ObstacleClusters::AddObstacle(
+    const int obstacle_id,
+    const std::string& lane_id,
+    const double lane_s,
+    const double lane_l) {
+  // TODO(kechxu) implement
+}
+
+void ObstacleClusters::SortObstacles() {
+  // TODO(kechxu) implement
+}
+
 bool ObstacleClusters::ForwardNearbyObstacle(
     const LaneSequence& lane_sequence,
     const int obstacle_id,
@@ -95,7 +107,6 @@ bool ObstacleClusters::BackwardNearbyObstacle(
     const int obstacle_id,
     const double obstacle_s,
     NearbyObstacle* const nearby_obstacle_ptr) {
-  // TODO(kechxu) implement
   if (lane_sequence.lane_segment_size() == 0) {
     AERROR << "Empty lane sequence found.";
     return false;
