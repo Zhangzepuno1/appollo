@@ -762,6 +762,7 @@ void Obstacle::SetCurrentLanes(Feature* feature) {
       lane.mutable_lane_feature()->CopyFrom(*lane_feature);
       min_heading_diff = std::fabs(angle_diff);
     }
+    ObstacleClusters::AddObstacle(id_, lane_id, s, l);
     ADEBUG << "Obstacle [" << id_ << "] has current lanes ["
            << lane_feature->ShortDebugString() << "].";
   }

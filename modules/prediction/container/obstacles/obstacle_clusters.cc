@@ -17,6 +17,7 @@
 #include "modules/prediction/container/obstacles/obstacle_clusters.h"
 
 #include <limits>
+#include <algorithm>
 
 #include "modules/prediction/common/road_graph.h"
 #include "modules/prediction/common/prediction_map.h"
@@ -65,11 +66,22 @@ void ObstacleClusters::AddObstacle(
     const std::string& lane_id,
     const double lane_s,
     const double lane_l) {
-  // TODO(kechxu) implement
+  LaneObstacle lane_obstacle;
+  lane_obstacle.set_obstacle_id(obstacle_id);
+  lane_obstacle.set_lane_id(lane_id);
+  lane_obstacle.set_lane_s(lane_s);
+  lane_obstacle.set_lane_l(lane_l);
+  lane_obstacles_[lane_id].push_back(std::move(lane_obstacle));
 }
 
 void ObstacleClusters::SortObstacles() {
-  // TODO(kechxu) implement
+  for (auto iter = lane_obstacles_.begin();
+       iter != lane_obstacles_.end(); ++iter) {
+    std::sort(iter->second.begin(), iter->second.end(),
+      [](const LaneObstacle& obs0, const LaneObstacle& obs1) -> bool {
+        return obs0.lane_s() < obs1.lane_s();
+      });
+  }
 }
 
 bool ObstacleClusters::ForwardNearbyObstacle(
