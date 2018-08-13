@@ -73,7 +73,7 @@ class ObstacleClusters {
    * @param the forward obstacle on lane
    * @return If the forward obstacle is found
    */
-  bool ForwardNearbyObstacle(
+  static bool ForwardNearbyObstacle(
       const LaneSequence& lane_sequence,
       const int obstacle_id,
       const double obstacle_s,
@@ -86,7 +86,7 @@ class ObstacleClusters {
    * @param the forward obstacle on lane
    * @return If the backward obstacle is found
    */
-  bool BackwardNearbyObstacle(
+  static bool BackwardNearbyObstacle(
     const LaneSequence& lane_sequence,
     const int obstacle_id,
     const double obstacle_s,

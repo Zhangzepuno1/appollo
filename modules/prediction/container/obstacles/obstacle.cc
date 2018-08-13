@@ -1011,7 +1011,31 @@ void Obstacle::SetLaneSequencePath(LaneGraph* const lane_graph) {
 }
 
 void Obstacle::SetNearbyObstacles() {
-  // TODO(kechxu) implement
+  // This function runs after all basic features have been set up
+  Feature* feature_ptr = mutable_latest_feature();
+  if (feature_ptr == nullptr) {
+    AERROR << "Null feature received.";
+    return;
+  }
+  LaneGraph* lane_graph =
+      feature_ptr->mutable_lane()->mutable_lane_graph();
+  for (int i = 0; i < lane_graph->lane_sequence_size(); ++i) {
+    LaneSequence* lane_sequence = lane_graph->mutable_lane_sequence(i);
+    if (lane_sequence->lane_segment_size() == 0) {
+      AERROR << "Empty lane sequence found.";
+      continue;
+    }
+    double obstacle_s =
+        lane_sequence->mutable_lane_segment(0)->start_s();
+    NearbyObstacle forward_obstacle;
+    ObstacleClusters::ForwardNearbyObstacle(*lane_sequence,
+        id_, obstacle_s, &forward_obstacle);
+    lane_sequence->add_nearby_obstacle()->CopyFrom(forward_obstacle);
+    NearbyObstacle backward_obstacle;
+    ObstacleClusters::BackwardNearbyObstacle(*lane_sequence,
+        id_, obstacle_s, &backward_obstacle);
+    lane_sequence->add_nearby_obstacle()->CopyFrom(backward_obstacle);
+  }
 }
 
 void Obstacle::SetMotionStatus() {
