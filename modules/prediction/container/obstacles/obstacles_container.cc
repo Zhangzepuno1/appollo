@@ -72,7 +72,13 @@ void ObstaclesContainer::Insert(const ::google::protobuf::Message& message) {
   ObstacleClusters::SortObstacles();
   for (const PerceptionObstacle& perception_obstacle :
        perception_obstacles.perception_obstacle()) {
+    if (IsPredictable(perception_obstacle)) {
+      continue;
+    }
     Obstacle* obstacle_ptr = GetObstacle(perception_obstacle.id());
+    if (obstacle_ptr == nullptr) {
+      continue;
+    }
     obstacle_ptr->SetNearbyObstacles();
   }
 }
