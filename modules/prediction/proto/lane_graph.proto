@@ -79,16 +79,19 @@ message LaneSequence {
 
     optional RelationType relation_type = 11;
 
+    optional double lane_s = 12;
+    optional double lane_l = 13;
+
     // lane points on this lane sequence
-    repeated LanePoint curr_lane_point = 12;
+    repeated LanePoint curr_lane_point = 14;
     // lane points on the left neighbor lane sequence
-    repeated LanePoint left_neighbor_point = 13;
+    repeated LanePoint left_neighbor_point = 15;
     // lane points on the right neighbor lane sequence
-    repeated LanePoint right_neighbor_point = 14;
+    repeated LanePoint right_neighbor_point = 16;
     // nearby obstacles on the left neighbor lane sequence
-    repeated NearbyObstacle left_nearby_obstacle = 15;
+    repeated NearbyObstacle left_nearby_obstacle = 17;
     // nearby obstacles on the right neighbor lane sequence
-    repeated NearbyObstacle right_nearby_obstacle = 16;
+    repeated NearbyObstacle right_nearby_obstacle = 18;
 }
 
 message LaneGraph {

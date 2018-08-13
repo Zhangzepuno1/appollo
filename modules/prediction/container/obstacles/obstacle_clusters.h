@@ -77,6 +77,7 @@ class ObstacleClusters {
       const LaneSequence& lane_sequence,
       const int obstacle_id,
       const double obstacle_s,
+      const double obstacle_l,
       NearbyObstacle* const nearby_obstacle_ptr);
 
   /**
@@ -90,6 +91,7 @@ class ObstacleClusters {
     const LaneSequence& lane_sequence,
     const int obstacle_id,
     const double obstacle_s,
+    const double obstacle_l,
     NearbyObstacle* const nearby_obstacle_ptr);
 
  private:

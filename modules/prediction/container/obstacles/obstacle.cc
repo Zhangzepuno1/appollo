@@ -859,6 +859,8 @@ void Obstacle::SetLaneGraphFeature(Feature* feature) {
       LaneSequence seq(lane_seq);
       seq.set_lane_sequence_id(seq_id++);
       seq.set_relation_type(LaneSequence::CURRENT_LANE);
+      seq.set_lane_s(lane.lane_s());
+      seq.set_lane_l(lane.lane_l());
       feature->mutable_lane()
           ->mutable_lane_graph()
           ->add_lane_sequence()
@@ -888,6 +890,8 @@ void Obstacle::SetLaneGraphFeature(Feature* feature) {
       } else {
         seq.set_relation_type(LaneSequence::LEFT_NEIGHBOR_LANE);
       }
+      seq.set_lane_s(lane.lane_s());
+      seq.set_lane_l(lane.lane_l());
       feature->mutable_lane()
           ->mutable_lane_graph()
           ->add_lane_sequence()
@@ -1025,15 +1029,15 @@ void Obstacle::SetNearbyObstacles() {
       AERROR << "Empty lane sequence found.";
       continue;
     }
-    double obstacle_s =
-        lane_sequence->mutable_lane_segment(0)->start_s();
+    double obstacle_s = lane_sequence->lane_s();
+    double obstacle_l = lane_sequence->lane_l();
     NearbyObstacle forward_obstacle;
     ObstacleClusters::ForwardNearbyObstacle(*lane_sequence,
-        id_, obstacle_s, &forward_obstacle);
+        id_, obstacle_s, obstacle_l, &forward_obstacle);
     lane_sequence->add_nearby_obstacle()->CopyFrom(forward_obstacle);
     NearbyObstacle backward_obstacle;
     ObstacleClusters::BackwardNearbyObstacle(*lane_sequence,
-        id_, obstacle_s, &backward_obstacle);
+        id_, obstacle_s, obstacle_l, &backward_obstacle);
     lane_sequence->add_nearby_obstacle()->CopyFrom(backward_obstacle);
   }
 }

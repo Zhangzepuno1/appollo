@@ -88,6 +88,7 @@ bool ObstacleClusters::ForwardNearbyObstacle(
     const LaneSequence& lane_sequence,
     const int obstacle_id,
     const double obstacle_s,
+    const double obstacle_l,
     NearbyObstacle* const nearby_obstacle_ptr) {
   double accumulated_s = 0.0;
   for (const LaneSegment& lane_segment : lane_sequence.lane_segment()) {
@@ -103,10 +104,11 @@ bool ObstacleClusters::ForwardNearbyObstacle(
         continue;
       }
       double relative_s = accumulated_s + lane_obstacle.lane_s() - obstacle_s;
+      double relative_l = lane_obstacle.lane_l() - obstacle_l;
       if (relative_s > 0.0) {
         nearby_obstacle_ptr->set_id(lane_obstacle.obstacle_id());
         nearby_obstacle_ptr->set_s(relative_s);
-        nearby_obstacle_ptr->set_l(lane_obstacle.lane_l());
+        nearby_obstacle_ptr->set_l(relative_l);
         return true;
       }
     }
@@ -118,6 +120,7 @@ bool ObstacleClusters::BackwardNearbyObstacle(
     const LaneSequence& lane_sequence,
     const int obstacle_id,
     const double obstacle_s,
+    const double obstacle_l,
     NearbyObstacle* const nearby_obstacle_ptr) {
   if (lane_sequence.lane_segment_size() == 0) {
     AERROR << "Empty lane sequence found.";
@@ -135,10 +138,11 @@ bool ObstacleClusters::BackwardNearbyObstacle(
         continue;
       }
       double relative_s = lane_obstacle.lane_s() - obstacle_s;
+      double relative_l = lane_obstacle.lane_l() - obstacle_l;
       if (relative_s < 0.0) {
         nearby_obstacle_ptr->set_id(lane_obstacle.obstacle_id());
         nearby_obstacle_ptr->set_s(relative_s);
-        nearby_obstacle_ptr->set_l(lane_obstacle.lane_l());
+        nearby_obstacle_ptr->set_l(relative_l);
         return true;
       }
     }
@@ -149,6 +153,7 @@ bool ObstacleClusters::BackwardNearbyObstacle(
       PredictionMap::LaneById(lane_id);
   bool found_one_behind = false;
   double relative_s = -std::numeric_limits<double>::infinity();
+  double relative_l = 0.0;
   for (const auto& predecessor_lane_id :
        lane_info_ptr->lane().predecessor_id()) {
     std::string lane_id = predecessor_lane_id.id();
@@ -164,9 +169,10 @@ bool ObstacleClusters::BackwardNearbyObstacle(
     found_one_behind = true;
     if (delta_s > relative_s) {
       relative_s = delta_s;
+      relative_l = backward_obs.lane_l() - obstacle_l;
       nearby_obstacle_ptr->set_id(backward_obs.obstacle_id());
       nearby_obstacle_ptr->set_s(relative_s);
-      nearby_obstacle_ptr->set_l(backward_obs.lane_l());
+      nearby_obstacle_ptr->set_l(relative_l);
     }
   }
 
