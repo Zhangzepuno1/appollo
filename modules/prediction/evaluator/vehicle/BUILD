@@ -130,4 +130,29 @@ cc_test(
     ],
 )
 
+cc_library(
+    name = "dnn_evaluator",
+    srcs = [
+        "dnn_evaluator.cc",
+    ],
+    hdrs = [
+        "dnn_evaluator.h",
+    ],
+    deps = [
+        "//modules/common/math:geometry",
+        "//modules/common/util",
+        "//modules/common/adapters/proto:adapter_config_proto",
+        "//modules/map/proto:map_proto",
+        "//modules/prediction/common:feature_output",
+        "//modules/prediction/common:prediction_gflags",
+        "//modules/prediction/common:prediction_util",
+        "//modules/prediction/common:validation_checker",
+        "//modules/prediction/container:container_manager",
+        "//modules/prediction/container/obstacles:obstacle",
+        "//modules/prediction/evaluator",
+        "//modules/prediction/proto:fnn_vehicle_model_proto",
+        "//modules/prediction/proto:lane_graph_proto",
+    ],
+)
+
 cpplint()
