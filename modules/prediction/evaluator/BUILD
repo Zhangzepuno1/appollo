@@ -15,6 +15,7 @@ cc_library(
         "//modules/prediction/evaluator/vehicle:cost_evaluator",
         "//modules/prediction/evaluator/vehicle:mlp_evaluator",
         "//modules/prediction/evaluator/vehicle:rnn_evaluator",
+        "//modules/prediction/evaluator/vehicle:dnn_evaluator",
         "//modules/prediction/proto:prediction_conf_proto",
         "@glog//:glog",
     ],
@@ -41,6 +42,7 @@ cc_test(
         "//modules/prediction/evaluator/vehicle:cost_evaluator",
         "//modules/prediction/evaluator/vehicle:mlp_evaluator",
         "//modules/prediction/evaluator/vehicle:rnn_evaluator",
+        "//modules/prediction/evaluator/vehicle:dnn_evaluator",
         "@gtest//:main",
     ],
 )

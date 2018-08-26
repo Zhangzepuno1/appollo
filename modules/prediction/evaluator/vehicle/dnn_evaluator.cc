@@ -51,6 +51,10 @@ double ComputeMean(const std::vector<double>& nums, size_t start, size_t end) {
 
 }  // namespace
 
+DNNEvaluator::DNNEvaluator() {
+  // TODO(kechxu) implement load model
+}
+
 void DNNEvaluator::Evaluate(Obstacle* obstacle_ptr) {
   Clear();
   CHECK_NOTNULL(obstacle_ptr);

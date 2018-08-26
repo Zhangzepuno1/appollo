@@ -22,6 +22,7 @@
 #include "modules/prediction/evaluator/vehicle/mlp_evaluator.h"
 #include "modules/prediction/evaluator/vehicle/rnn_evaluator.h"
 #include "modules/prediction/evaluator/vehicle/cost_evaluator.h"
+#include "modules/prediction/evaluator/vehicle/dnn_evaluator.h"
 
 namespace apollo {
 namespace prediction {
@@ -36,6 +37,7 @@ void EvaluatorManager::RegisterEvaluators() {
   RegisterEvaluator(ObstacleConf::MLP_EVALUATOR);
   RegisterEvaluator(ObstacleConf::RNN_EVALUATOR);
   RegisterEvaluator(ObstacleConf::COST_EVALUATOR);
+  RegisterEvaluator(ObstacleConf::DNN_EVALUATOR);
 }
 
 void EvaluatorManager::Init(const PredictionConf& config) {
@@ -161,6 +163,10 @@ std::unique_ptr<Evaluator> EvaluatorManager::CreateEvaluator(
     }
     case ObstacleConf::COST_EVALUATOR: {
       evaluator_ptr.reset(new CostEvaluator());
+      break;
+    }
+    case ObstacleConf::DNN_EVALUATOR: {
+      evaluator_ptr.reset(new DNNEvaluator());
       break;
     }
     default: { break; }
