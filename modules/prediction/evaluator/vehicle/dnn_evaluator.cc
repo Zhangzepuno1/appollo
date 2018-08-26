@@ -52,11 +52,111 @@ double ComputeMean(const std::vector<double>& nums, size_t start, size_t end) {
 }  // namespace
 
 void DNNEvaluator::Evaluate(Obstacle* obstacle_ptr) {
-  // TODO(kechxu) implement
+  Clear();
+  CHECK_NOTNULL(obstacle_ptr);
+  CHECK_LE(LANE_FEATURE_SIZE, 4 * FLAGS_max_num_lane_point);
+
+  int id = obstacle_ptr->id();
+  if (!obstacle_ptr->latest_feature().IsInitialized()) {
+    AERROR << "Obstacle [" << id << "] has no latest feature.";
+    return;
+  }
+
+  Feature* latest_feature_ptr = obstacle_ptr->mutable_latest_feature();
+  CHECK_NOTNULL(latest_feature_ptr);
+  if (!latest_feature_ptr->has_lane() ||
+      !latest_feature_ptr->lane().has_lane_graph()) {
+    ADEBUG << "Obstacle [" << id << "] has no lane graph.";
+    return;
+  }
+
+  double speed = latest_feature_ptr->speed();
+
+  LaneGraph* lane_graph_ptr =
+      latest_feature_ptr->mutable_lane()->mutable_lane_graph();
+  CHECK_NOTNULL(lane_graph_ptr);
+  if (lane_graph_ptr->lane_sequence_size() == 0) {
+    AERROR << "Obstacle [" << id << "] has no lane sequences.";
+    return;
+  }
+
+  for (int i = 0; i < lane_graph_ptr->lane_sequence_size(); ++i) {
+    LaneSequence* lane_sequence_ptr = lane_graph_ptr->mutable_lane_sequence(i);
+    CHECK(lane_sequence_ptr != nullptr);
+    std::vector<double> feature_values;
+    ExtractFeatureValues(obstacle_ptr, lane_sequence_ptr, &feature_values);
+    double probability = ComputeProbability(feature_values);
+
+    double centripetal_acc_probability =
+        ValidationChecker::ProbabilityByCentripedalAcceleration(
+            *lane_sequence_ptr, speed);
+    probability *= centripetal_acc_probability;
+    lane_sequence_ptr->set_probability(probability);
+  }
+
+  if (FLAGS_prediction_offline_mode) {
+    FeatureOutput::Insert(*latest_feature_ptr);
+  }
 }
 
 void DNNEvaluator::Clear() {
   obstacle_feature_values_map_.clear();
+}
+
+void DNNEvaluator::ExtractFeatureValues(
+    Obstacle* obstacle_ptr,
+    LaneSequence* lane_sequence_ptr,
+    std::vector<double>* feature_values) {
+  int id = obstacle_ptr->id();
+  std::vector<double> obstacle_feature_values;
+
+  auto it = obstacle_feature_values_map_.find(id);
+  if (it == obstacle_feature_values_map_.end()) {
+    SetObstacleFeatureValues(obstacle_ptr, &obstacle_feature_values);
+    obstacle_feature_values_map_[id] = obstacle_feature_values;
+  } else {
+    obstacle_feature_values = it->second;
+  }
+
+  if (obstacle_feature_values.size() != OBSTACLE_FEATURE_SIZE) {
+    ADEBUG << "Obstacle [" << id << "] has fewer than "
+           << "expected obstacle feature_values "
+           << obstacle_feature_values.size() << ".";
+    return;
+  }
+
+  std::vector<double> lane_feature_values;
+  SetLaneFeatureValues(obstacle_ptr, lane_sequence_ptr, &lane_feature_values);
+  if (lane_feature_values.size() != LANE_FEATURE_SIZE) {
+    ADEBUG << "Obstacle [" << id << "] has fewer than "
+           << "expected lane feature_values" << lane_feature_values.size()
+           << ".";
+    return;
+  }
+
+  std::vector<double> interaction_feature_values;
+  SetInteractionFeatureValues(
+      obstacle_ptr, lane_sequence_ptr, &interaction_feature_values);
+  if (interaction_feature_values.size() != INTERACTION_FEATURE_SIZE) {
+    ADEBUG << "Obstacle [" << id << "] has fewer than "
+           << "expected interaction feature_values"
+           << interaction_feature_values.size() << ".";
+    return;
+  }
+
+  feature_values->insert(feature_values->end(),
+                         obstacle_feature_values.begin(),
+                         obstacle_feature_values.end());
+  feature_values->insert(feature_values->end(),
+                         lane_feature_values.begin(),
+                         lane_feature_values.end());
+  feature_values->insert(feature_values->end(),
+                         interaction_feature_values.begin(),
+                         interaction_feature_values.end());
+
+  if (FLAGS_prediction_offline_mode) {
+    SaveOfflineFeatures(lane_sequence_ptr, *feature_values);
+  }
 }
 
 void DNNEvaluator::SetObstacleFeatureValues(
@@ -300,6 +400,19 @@ void DNNEvaluator::SetInteractionFeatureValues(Obstacle* obstacle_ptr,
     const Feature& feature = backward_obs_ptr->latest_feature();
     feature_values->push_back(feature.length());
     feature_values->push_back(feature.speed());
+  }
+}
+
+double DNNEvaluator::ComputeProbability(
+    const std::vector<double>& feature_values) {
+  // TODO(kechxu) implement when model is trained
+  return 0.1;
+}
+
+void DNNEvaluator::SaveOfflineFeatures(
+    LaneSequence* sequence, const std::vector<double>& feature_values) {
+  for (double feature_value : feature_values) {
+    sequence->mutable_features()->add_mlp_features(feature_value);
   }
 }
 
